@@ -125,11 +125,11 @@ const insertdata = async (req, res) => {
             }
         }
         else {
-            if (!name || !discription) {
-                console.log("Enter All Data");
-                return res.redirect('/')
-            }
             let image = "";
+            if (!name || !discription || !image) {
+                console.log("Enter All Data");
+                return res.redirect('/addblog')
+            }
             if (req.file) {
                 image = req.file.path
             }
