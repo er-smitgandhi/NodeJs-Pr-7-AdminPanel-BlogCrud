@@ -106,6 +106,10 @@ const insertdata = async (req, res) => {
             else {
                 image = "";
                 let singledata = await blogtbl.findById(editid);
+                if (!name || !discription || !image) {
+                    console.log("Enter All Data");
+                    return res.redirect('/')
+                }
                 if(singledata){
                     image = singledata.image;
                     let updatedata = await blogtbl.findByIdAndUpdate(editid,{
