@@ -130,12 +130,12 @@ const insertdata = async (req, res) => {
         }
         else {
             let image = "";
-            if (!name || !discription || !image) {
-                console.log("Enter All Data");
-                return res.redirect('/addblog')
-            }
             if (req.file) {
                 image = req.file.path
+            }
+            if (!name || !discription || !image) {
+                console.log("Enter All data");
+                return res.redirect('/addblog')
             }
             let data = await blogtbl.create({
                 name: name,
