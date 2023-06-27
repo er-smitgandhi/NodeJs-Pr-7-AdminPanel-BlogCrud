@@ -7,7 +7,7 @@
             <div class="page-breadcrumb">
                 <div class="row">
                     <div class="col-12 d-flex no-block align-items-center">
-                        <h4 class="page-title">Blog</h4>
+                        <h4 class="page-title">Profile</h4>
                         <div class="ml-auto text-right">
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
@@ -32,39 +32,38 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="card">
-                            <form class="form-horizontal" method="post" action="/insertdata" enctype="multipart/form-data">
-                                <input type="hidden" value="<%= single.id %>" name="editid">
+                            <form class="form-horizontal" method="post" action="/changeprofile">
+                                <input type="hidden" value="<%= locals.users.id %>" name="editid">
                                 <div class="card-body">
-                                    <h4 class="card-title">Blog Info</h4>
+                                    <h4 class="card-title">Profile Info</h4>
                                     <div class="form-group row">
-                                        <label for="fname" class="col-sm-3 text-right control-label col-form-label">Blog title</label>
+                                        <label for="fname" class="col-sm-2 text-left control-label col-form-label">Name</label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="name" class="form-control" id="fname" value="<%= single.name %>" placeholder="Title">
+                                            <input type="text" name="name" class="form-control" id="fname" value="<%= locals.users.name %>">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="lname" class="col-sm-3 text-right control-label col-form-label">Discription</label>
+                                        <label for="lname" class="col-sm-2 text-left control-label col-form-label">Email</label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="discription" class="form-control" id="lname" value="<%= single.discription %>" placeholder="Write here Discription">
+                                            <input type="text" name="email" class="form-control" id="lname" value="<%= locals.users.email %>" readonly>
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="lname" class="col-sm-3 text-right control-label col-form-label">Image Upload</label>
+                                        <label for="lname" class="col-sm-2 text-left control-label col-form-label">Password</label>
                                         <div class="col-sm-9">
-                                            <input type="file" name="image" class="form-control" id="lname">
-                                            <% if(single){ %>
-                                                <img src="<%= single.image %>" width="150">
-                                            <% } %>
+                                            <input type="text" name="password" class="form-control" id="lname" value="<%= locals.users.password %>">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="lname" class="col-sm-2 text-left control-label col-form-label">Confirm Password</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="cpassword" class="form-control" id="lname">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="border-top">
                                     <div class="card-body">
-                                        <% if(single){ %>
-                                        <input type="submit" value="Edit" class="btn btn-primary"></input>
-                                        <% }else{ %>
-                                            <input type="submit" class="btn btn-primary"></input>
-                                        <% } %>
+                                        <input type="submit" value="Change Profile" class="btn btn-primary"></input>
                                     </div>
                                 </div>
                             </form>

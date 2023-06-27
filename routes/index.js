@@ -19,5 +19,9 @@ routes.post('/insertdata',fileupload,controller.insertdata),
 routes.get('/viewblog',passport.checkAuthentication,controller.viewblog)
 routes.get('/deletedata',controller.deletedata)
 routes.get('/editdata',controller.editdata)
+routes.get('/newpassword',passport.checkAuthentication,controller.newpassword)
+routes.post('/Setnewpassword',controller.Setnewpassword)
+routes.get('/profile',passport.checkAuthentication,controller.profile)
+routes.post('/changeprofile',controller.changeprofile)
 
 module.exports = routes

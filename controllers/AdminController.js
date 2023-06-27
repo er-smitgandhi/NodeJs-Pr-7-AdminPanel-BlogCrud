@@ -232,6 +232,69 @@ const editdata = async (req, res) => {
     }
 }
 
+const newpassword = (req,res) =>{
+    return res.render('newpassword')
+}
+
+const Setnewpassword = async(req,res)=>{
+    try {
+        const {editid,npassword,cpassword} = req.body;
+        if(!npassword || !cpassword){
+            console.log("Remains Some Password");
+            return res.redirect('/newpassword')
+        }
+        if(npassword != cpassword){
+            console.log("new password And Confirm Password are not match");
+            return res.redirect('/newpassword')
+        }
+        let changepassword = await registertbl.findByIdAndUpdate(editid,{
+            password : npassword
+        })
+        if(changepassword){
+            console.log("Password successfully change");
+            return res.redirect('/newpassword')
+        }
+    } 
+    catch (err) {
+        if (err) {
+            console.log(err);
+            return false
+        }
+    }
+}
+
+const profile = (req,res)=>{
+    return res.render('profile')
+}
+
+const changeprofile = async(req,res)=>{
+    try {
+        const {editid,name,password,cpassword} = req.body
+        if(!name || !password || !cpassword){
+            console.log("Enter All the Field");
+            return res.redirect('back')
+        }
+        if(password != cpassword){
+            console.log("Both Password are not match");
+            return res.redirect('back')
+        }
+        let changeprofile = await registertbl.findByIdAndUpdate(editid,{
+            name : name,
+            password : password
+        })
+        if(changeprofile){
+            console.log("Profile is change");
+            return res.redirect('back')
+        }
+    } 
+    catch (err) {
+        if (err) {
+            console.log(err);
+            return false
+        }
+    }
+}
+
 module.exports = {
     login,
     register,
@@ -243,5 +306,9 @@ module.exports = {
     insertdata,
     viewblog,
     deletedata,
-    editdata
+    editdata,
+    newpassword,
+    Setnewpassword,
+    profile,
+    changeprofile
 }
