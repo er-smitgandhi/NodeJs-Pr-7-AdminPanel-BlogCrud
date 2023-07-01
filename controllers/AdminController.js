@@ -2,6 +2,8 @@ const registertbl = require('../models/registertbl')
 
 const blogtbl = require('../models/blogtbl')
 
+const nodemailer = require('nodemailer')
+
 const fs = require('fs')
 
 const login = (req, res) => {
@@ -86,15 +88,15 @@ const insertdata = async (req, res) => {
                     return false
                 }
                 let image = "";
-                if(req.file){
+                if (req.file) {
                     image = req.file.path
                 }
-                let updatedata = await blogtbl.findByIdAndUpdate(editid,{
-                    name : name,
-                    discription : discription,
-                    image : image
+                let updatedata = await blogtbl.findByIdAndUpdate(editid, {
+                    name: name,
+                    discription: discription,
+                    image: image
                 })
-                if(updatedata){
+                if (updatedata) {
                     console.log("Edit Done");
                     return res.redirect('/viewblog')
                 }
@@ -106,18 +108,19 @@ const insertdata = async (req, res) => {
             else {
                 image = "";
                 let singledata = await blogtbl.findById(editid);
-                if (!name || !discription || !image) {
+                if (!name || !discription) {
                     console.log("Enter All Data");
-                    return res.redirect('/')
+                    return res.redirect('back')
                 }
-                if(singledata){
+                if (singledata) {
                     image = singledata.image;
-                    let updatedata = await blogtbl.findByIdAndUpdate(editid,{
-                        name : name,
-                        discription : discription,
-                        image : image
+                    let updatedata = await blogtbl.findByIdAndUpdate(editid, {
+                        name: name,
+                        discription: discription,
+                        image: image
                     })
-                    if(updatedata){
+                    if (updatedata) {
+                        req.flash('success', "Data Successfully Edit")
                         console.log("Edit Done");
                         return res.redirect('/viewblog')
                     }
@@ -134,6 +137,7 @@ const insertdata = async (req, res) => {
                 image = req.file.path
             }
             if (!name || !discription || !image) {
+                req.flash('danger', "Enter All data");
                 console.log("Enter All data");
                 return res.redirect('/addblog')
             }
@@ -143,8 +147,9 @@ const insertdata = async (req, res) => {
                 image: image
             })
             if (data) {
+                req.flash('success', "Data Successfully Add");
                 console.log("Data Successfully Add");
-                return res.redirect('/viewblog');
+                return res.redirect('back');
             }
             else {
                 console.log(err);
@@ -194,6 +199,7 @@ const deletedata = async (req, res) => {
         }
         let dltdata = await blogtbl.findByIdAndDelete(id)
         if (dltdata) {
+            req.flash('danger', 'Data Successfully delete')
             console.log("data deleted");
             return res.redirect('back');
         }
@@ -232,29 +238,32 @@ const editdata = async (req, res) => {
     }
 }
 
-const newpassword = (req,res) =>{
+const newpassword = (req, res) => {
     return res.render('newpassword')
 }
 
-const Setnewpassword = async(req,res)=>{
+const Setnewpassword = async (req, res) => {
     try {
-        const {editid,npassword,cpassword} = req.body;
-        if(!npassword || !cpassword){
-            console.log("Remains Some Password");
+        const { editid, npassword, cpassword } = req.body;
+        if (!npassword || !cpassword) {
+            req.flash('danger', "Enter all field")
+            console.log("Enter all field");
             return res.redirect('/newpassword')
         }
-        if(npassword != cpassword){
+        if (npassword != cpassword) {
+            req.flash('danger', "new password And Confirm Password are not match")
             console.log("new password And Confirm Password are not match");
             return res.redirect('/newpassword')
         }
-        let changepassword = await registertbl.findByIdAndUpdate(editid,{
-            password : npassword
+        let changepassword = await registertbl.findByIdAndUpdate(editid, {
+            password: npassword
         })
-        if(changepassword){
+        if (changepassword) {
+            req.flash('success', "Password successfully change")
             console.log("Password successfully change");
             return res.redirect('/newpassword')
         }
-    } 
+    }
     catch (err) {
         if (err) {
             console.log(err);
@@ -263,28 +272,149 @@ const Setnewpassword = async(req,res)=>{
     }
 }
 
-const profile = (req,res)=>{
+const profile = (req, res) => {
     return res.render('profile')
 }
 
-const changeprofile = async(req,res)=>{
+const changeprofile = async (req, res) => {
     try {
-        const {editid,name,password,cpassword} = req.body
-        if(!name || !password || !cpassword){
+        const { editid, name, password, cpassword } = req.body
+        if (!name || !password || !cpassword) {
+            req.flash('danger', "Enter All the Field")
             console.log("Enter All the Field");
             return res.redirect('back')
         }
-        if(password != cpassword){
+        if (password != cpassword) {
+            req.flash('danger', "Both Password are not match")
             console.log("Both Password are not match");
             return res.redirect('back')
         }
-        let changeprofile = await registertbl.findByIdAndUpdate(editid,{
-            name : name,
-            password : password
+        let changeprofile = await registertbl.findByIdAndUpdate(editid, {
+            name: name,
+            password: password
         })
-        if(changeprofile){
+        if (changeprofile) {
+            req.flash('success', 'Profile is successfully change')
             console.log("Profile is change");
             return res.redirect('back')
+        }
+    }
+    catch (err) {
+        if (err) {
+            console.log(err);
+            return false
+        }
+    }
+}
+
+const forgotpassword = async (req, res) => {
+    const { email } = req.body;
+    let useremail = req.body.email
+    try {
+        let checkemail = await registertbl.findOne({ email: email })
+        if (checkemail) {
+
+            // Create a transporter using your email service provider details
+            const transporter = nodemailer.createTransport({
+                service: 'Gmail',
+                auth: {
+                    user: 'smitgandhi2001@gmail.com',
+                    pass: 'irtnhbyihlfarkio'
+                }
+            });
+
+            // Generate a random OTP
+            const generateOTP = () => {
+                const digits = '0123456789';
+                let OTP = '';
+                for (let i = 0; i < 6; i++) {
+                    OTP += digits[Math.floor(Math.random() * 10)];
+                }
+                return OTP;
+            };
+
+            // Send OTP via email
+            const sendOTP = (email, otp) => {
+
+
+                const mailOptions = {
+                    from: 'smitgandhi2001@gmail.com',
+                    to: useremail,
+                    subject: 'One-Time Password (OTP) Verification',
+                    text: `Your OTP is: ${otp}`
+                };
+
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        console.log('Error sending OTP:', error);
+                    } else {
+                        console.log('OTP sent successfully.');
+                        let obj = {
+                            otp: otp,
+                            email: useremail
+                        }
+                        res.cookie('userotp', obj);
+                        return res.redirect('/otp')
+                    }
+                });
+            };
+
+            // Example usage
+            const email = useremail;
+            const otp = generateOTP();
+            sendOTP(email, otp);
+        }
+        else {
+            req.flash('danger', "Mail Not found")
+            console.log("Mail Not found");
+            return res.redirect('back')
+        }
+    }
+    catch (err) {
+        if (err) {
+            console.log(err);
+            return false
+        }
+    }
+}
+
+const otp = (req, res) => {
+    return res.render('otp');
+}
+
+const enterotp = (req, res) => {
+    if (req.cookies.userotp.otp == req.body.otp) {
+        return res.redirect('/loginNewpassword')
+    }
+    else {
+        req.flash('danger', "Otp Is invalid")
+        return res.redirect('back')
+    }
+}
+
+const loginNewpass = (req, res) => {
+    return res.render('loginNewPassword')
+}
+
+const newpass = async(req,res)=>{
+    try {
+        const {npassword,cpassword} = req.body
+        if(npassword != cpassword){
+            req.flash('danger',"New And Confirm Password are not match")
+            return res.redirect('back');
+        }
+        else{
+            let email = req.cookies.userotp.email
+            let changepassword = await registertbl.findOneAndUpdate({email},{
+                password : npassword
+            })
+            if(changepassword){
+                res.clearCookie('userotp')
+                return res.redirect('/')
+            }else{
+                console.log("password not update");
+                return res.redirect('back')
+            }
         }
     } 
     catch (err) {
@@ -310,5 +440,10 @@ module.exports = {
     newpassword,
     Setnewpassword,
     profile,
-    changeprofile
+    changeprofile,
+    forgotpassword,
+    otp,
+    enterotp,
+    loginNewpass,
+    newpass
 }

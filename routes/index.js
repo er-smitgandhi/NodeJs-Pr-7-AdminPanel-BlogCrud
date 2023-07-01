@@ -23,5 +23,10 @@ routes.get('/newpassword',passport.checkAuthentication,controller.newpassword)
 routes.post('/Setnewpassword',controller.Setnewpassword)
 routes.get('/profile',passport.checkAuthentication,controller.profile)
 routes.post('/changeprofile',controller.changeprofile)
+routes.post('/forgotpassword',controller.forgotpassword)
+routes.get('/otp',controller.otp)
+routes.post('/enterotp',controller.enterotp)
+routes.get('/loginNewpassword',controller.loginNewpass)
+routes.post('/newpass',controller.newpass)
 
 module.exports = routes
