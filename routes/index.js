@@ -6,27 +6,34 @@ const passport = require('passport')
 
 const fileupload = require('../config/fileupload')
 
-const controller = require('../controllers/AdminController')
+const Admincontroller = require('../controllers/AdminController')
+const CategoryController = require('../controllers/CategoryController')
 
-routes.get('/',controller.login);
-routes.get('/register',controller.register)
-routes.get('/dashboard',passport.checkAuthentication,controller.dashboard)
-routes.post('/registerData',controller.registerData)
-routes.post('/loginData',passport.authenticate('local',{failureRedirect : '/'}),controller.loginData);
-routes.get('/logout',controller.logout),
-routes.get('/addblog',passport.checkAuthentication,controller.addblog),
-routes.post('/insertdata',fileupload,controller.insertdata),
-routes.get('/viewblog',passport.checkAuthentication,controller.viewblog)
-routes.get('/deletedata',controller.deletedata)
-routes.get('/editdata',controller.editdata)
-routes.get('/newpassword',passport.checkAuthentication,controller.newpassword)
-routes.post('/Setnewpassword',controller.Setnewpassword)
-routes.get('/profile',passport.checkAuthentication,controller.profile)
-routes.post('/changeprofile',controller.changeprofile)
-routes.post('/forgotpassword',controller.forgotpassword)
-routes.get('/otp',controller.otp)
-routes.post('/enterotp',controller.enterotp)
-routes.get('/loginNewpassword',controller.loginNewpass)
-routes.post('/newpass',controller.newpass)
+routes.get('/',Admincontroller.login);
+routes.get('/register',Admincontroller.register)
+routes.get('/dashboard',passport.checkAuthentication,Admincontroller.dashboard)
+routes.post('/registerData',Admincontroller.registerData)
+routes.post('/loginData',passport.authenticate('local',{failureRedirect : '/'}),Admincontroller.loginData);
+routes.get('/logout',Admincontroller.logout),
+routes.get('/addblog',passport.checkAuthentication,Admincontroller.addblog),
+routes.post('/insertdata',fileupload,Admincontroller.insertdata),
+routes.get('/viewblog',passport.checkAuthentication,Admincontroller.viewblog)
+routes.get('/deletedata',Admincontroller.deletedata)
+routes.get('/editdata',Admincontroller.editdata)
+routes.get('/newpassword',passport.checkAuthentication,Admincontroller.newpassword)
+routes.post('/Setnewpassword',Admincontroller.Setnewpassword)
+routes.get('/profile',passport.checkAuthentication,Admincontroller.profile)
+routes.post('/changeprofile',Admincontroller.changeprofile)
+routes.post('/forgotpassword',Admincontroller.forgotpassword)
+routes.get('/otp',Admincontroller.otp)
+routes.post('/enterotp',Admincontroller.enterotp)
+routes.get('/loginNewpassword',Admincontroller.loginNewpass)
+routes.post('/newpass',Admincontroller.newpass)
+
+// Category Routes
+routes.get('/category',passport.checkAuthentication,CategoryController.category)
+routes.post('/addcategory',CategoryController.addcategory)
+routes.get('/deletecategory',CategoryController.deletecategory)
+routes.get('/editcategory',CategoryController.editcategory)
 
 module.exports = routes
