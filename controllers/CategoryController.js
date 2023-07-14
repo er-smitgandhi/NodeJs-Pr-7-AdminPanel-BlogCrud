@@ -1,4 +1,6 @@
 const categorytbl = require('../models/categorytbl')
+const subcategorytbl = require('../models/SubCategorytbl')
+const exsubcategorytbl = require('../models/ExSubCategorytbl')
 
 const category = async (req,res)=>{
     try {
