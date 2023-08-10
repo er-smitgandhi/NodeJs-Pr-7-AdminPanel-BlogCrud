@@ -36,6 +36,17 @@
                                 <input type="hidden" value="<%= locals.users.id %>" name="editid">
                                 <div class="card-body">
                                     <h4 class="card-title">Profile Info</h4>
+                                    <% if(message.success.length> 0){ %>
+                                        <div class="alert alert-success" role="alert">
+                                            <%= message.success %>
+                                        </div>
+                                    <% } %>
+                                    <% if(message.danger.length> 0){ %>
+                                        <div class="alert alert-danger" role="alert">
+                                            <%= message.danger %>
+                                        </div>
+                                    <% } %>
+                                    
                                     <div class="form-group row">
                                         <label for="fname" class="col-sm-2 text-left control-label col-form-label">Name</label>
                                         <div class="col-sm-9">
@@ -57,7 +68,7 @@
                                     <div class="form-group row">
                                         <label for="lname" class="col-sm-2 text-left control-label col-form-label">Confirm Password</label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="cpassword" class="form-control" id="lname">
+                                            <input type="text" name="cpassword" class="form-control" id="lname" value="<%= locals.users.password %>">
                                         </div>
                                     </div>
                                 </div>
